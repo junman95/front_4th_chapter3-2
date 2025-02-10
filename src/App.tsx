@@ -180,13 +180,6 @@ function App() {
           </FormControl>
 
           <FormControl>
-            <FormLabel>반복 설정</FormLabel>
-            <Checkbox isChecked={isRepeating} onChange={(e) => setIsRepeating(e.target.checked)}>
-              반복 일정
-            </Checkbox>
-          </FormControl>
-
-          <FormControl>
             <FormLabel>알림 설정</FormLabel>
             <Select
               value={notificationTime}
@@ -200,6 +193,12 @@ function App() {
             </Select>
           </FormControl>
 
+          <FormControl>
+            <FormLabel>반복 설정</FormLabel>
+            <Checkbox isChecked={isRepeating} onChange={(e) => setIsRepeating(e.target.checked)}>
+              반복 일정
+            </Checkbox>
+          </FormControl>
           {isRepeating && (
             <VStack width="100%">
               <FormControl>
