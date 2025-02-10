@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 
-import { Event, RepeatType } from '../types';
+import { Event } from '../types';
 import { getTimeErrorMessage } from '../utils/timeValidation';
 
 type TimeErrorRecord = Record<'startTimeError' | 'endTimeError', string | null>;
@@ -13,12 +13,7 @@ export const useEventForm = (initialEvent?: Event) => {
   const [description, setDescription] = useState(initialEvent?.description || '');
   const [location, setLocation] = useState(initialEvent?.location || '');
   const [category, setCategory] = useState(initialEvent?.category || '');
-  const [isRepeating, setIsRepeating] = useState(initialEvent?.repeat.type !== 'none');
-  const [repeatType, setRepeatType] = useState<RepeatType>(initialEvent?.repeat.type || 'none');
-  const [repeatInterval, setRepeatInterval] = useState(initialEvent?.repeat.interval || 1);
-  const [repeatEndDate, setRepeatEndDate] = useState(initialEvent?.repeat.endDate || '');
   const [notificationTime, setNotificationTime] = useState(initialEvent?.notificationTime || 10);
-
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
 
   const [{ startTimeError, endTimeError }, setTimeError] = useState<TimeErrorRecord>({
@@ -46,10 +41,6 @@ export const useEventForm = (initialEvent?: Event) => {
     setDescription('');
     setLocation('');
     setCategory('');
-    setIsRepeating(false);
-    setRepeatType('none');
-    setRepeatInterval(1);
-    setRepeatEndDate('');
     setNotificationTime(10);
   };
 
@@ -62,10 +53,6 @@ export const useEventForm = (initialEvent?: Event) => {
     setDescription(event.description);
     setLocation(event.location);
     setCategory(event.category);
-    setIsRepeating(event.repeat.type !== 'none');
-    setRepeatType(event.repeat.type);
-    setRepeatInterval(event.repeat.interval);
-    setRepeatEndDate(event.repeat.endDate || '');
     setNotificationTime(event.notificationTime);
   };
 
@@ -84,14 +71,6 @@ export const useEventForm = (initialEvent?: Event) => {
     setLocation,
     category,
     setCategory,
-    isRepeating,
-    setIsRepeating,
-    repeatType,
-    setRepeatType,
-    repeatInterval,
-    setRepeatInterval,
-    repeatEndDate,
-    setRepeatEndDate,
     notificationTime,
     setNotificationTime,
     startTimeError,

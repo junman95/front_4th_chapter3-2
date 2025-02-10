@@ -14,6 +14,7 @@ interface Data {
 
   saveEvent: (event: Event | EventForm) => Promise<void>;
   resetForm: () => void;
+  resetRepeat: () => void;
   errors: {
     startTimeError: string | null;
     endTimeError: string | null;
@@ -29,6 +30,7 @@ const useChangeEvent = ({
   setIsOverlapDialogOpen,
   saveEvent,
   resetForm,
+  resetRepeat,
   errors,
 }: Data) => {
   const {
@@ -90,6 +92,7 @@ const useChangeEvent = ({
     } else {
       await saveEvent(eventData);
       resetForm();
+      resetRepeat();
     }
   };
 

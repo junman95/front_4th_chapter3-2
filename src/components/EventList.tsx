@@ -21,6 +21,7 @@ interface EventListProps {
   notificationOptions: { value: number; label: string }[];
 
   editEvent: (event: Event) => void;
+  editEventRepeat: (event: Event) => void;
 
   deleteEvent: (eventId: string) => void;
 }
@@ -32,6 +33,7 @@ const EventList: React.FC<EventListProps> = ({
   notifiedEvents,
   notificationOptions,
   editEvent,
+  editEventRepeat,
   deleteEvent,
 }) => {
   return (
@@ -91,7 +93,10 @@ const EventList: React.FC<EventListProps> = ({
                 <IconButton
                   aria-label="Edit event"
                   icon={<EditIcon />}
-                  onClick={() => editEvent(event)}
+                  onClick={() => {
+                    editEvent(event);
+                    editEventRepeat(event);
+                  }}
                 />
                 <IconButton
                   aria-label="Delete event"

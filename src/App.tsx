@@ -20,14 +20,16 @@ import EventList from './components/EventList.tsx';
 import MonthView from './components/MothView.tsx';
 import NotificationList from './components/NotificationList.tsx';
 import OverlapAlertDialog from './components/OverlapAlertDialog.tsx';
+import RepeatControls from './components/RepeatControls.tsx';
 import WeekView from './components/WeekView.tsx';
 import { useCalendarView } from './hooks/useCalendarView.ts';
 import { useChangeEvent } from './hooks/useChangeEvent.ts';
 import { useEventForm } from './hooks/useEventForm.ts';
 import { useEventOperations } from './hooks/useEventOperations.ts';
 import { useNotifications } from './hooks/useNotifications.ts';
+import { useRepeatControl } from './hooks/useRepeatControl.ts';
 import { useSearch } from './hooks/useSearch.ts';
-import { Event, RepeatType } from './types';
+import { Event } from './types';
 import { getTimeErrorMessage } from './utils/timeValidation';
 
 const categories = ['업무', '개인', '가족', '기타'];
@@ -56,14 +58,6 @@ function App() {
     setLocation,
     category,
     setCategory,
-    isRepeating,
-    setIsRepeating,
-    repeatType,
-    setRepeatType,
-    repeatInterval,
-    setRepeatInterval,
-    repeatEndDate,
-    setRepeatEndDate,
     notificationTime,
     setNotificationTime,
     startTimeError,
@@ -75,6 +69,19 @@ function App() {
     resetForm,
     editEvent,
   } = useEventForm();
+
+  const {
+    isRepeating,
+    setIsRepeating,
+    repeatType,
+    setRepeatType,
+    repeatInterval,
+    setRepeatInterval,
+    repeatEndDate,
+    setRepeatEndDate,
+    resetRepeat,
+    editEventRepeat,
+  } = useRepeatControl();
 
   const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
     setEditingEvent(null)
@@ -110,6 +117,7 @@ function App() {
     editingEvent,
     isRepeating,
     resetForm,
+    resetRepeat,
     setIsOverlapDialogOpen,
     setOverlappingEvents,
   });
@@ -193,47 +201,16 @@ function App() {
             </Select>
           </FormControl>
 
-          <FormControl>
-            <FormLabel>반복 설정</FormLabel>
-            <Checkbox isChecked={isRepeating} onChange={(e) => setIsRepeating(e.target.checked)}>
-              반복 일정
-            </Checkbox>
-          </FormControl>
-          {isRepeating && (
-            <VStack width="100%">
-              <FormControl>
-                <FormLabel>반복 유형</FormLabel>
-                <Select
-                  value={repeatType}
-                  onChange={(e) => setRepeatType(e.target.value as RepeatType)}
-                >
-                  <option value="daily">매일</option>
-                  <option value="weekly">매주</option>
-                  <option value="monthly">매월</option>
-                  <option value="yearly">매년</option>
-                </Select>
-              </FormControl>
-              <HStack width="100%">
-                <FormControl>
-                  <FormLabel>반복 간격</FormLabel>
-                  <Input
-                    type="number"
-                    value={repeatInterval}
-                    onChange={(e) => setRepeatInterval(Number(e.target.value))}
-                    min={1}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel>반복 종료일</FormLabel>
-                  <Input
-                    type="date"
-                    value={repeatEndDate}
-                    onChange={(e) => setRepeatEndDate(e.target.value)}
-                  />
-                </FormControl>
-              </HStack>
-            </VStack>
-          )}
+          <RepeatControls
+            isRepeating={isRepeating}
+            setIsRepeating={setIsRepeating}
+            repeatType={repeatType}
+            setRepeatType={setRepeatType}
+            repeatEndDate={repeatEndDate}
+            setRepeatEndDate={setRepeatEndDate}
+            repeatInterval={repeatInterval}
+            setRepeatInterval={setRepeatInterval}
+          />
 
           <Button data-testid="event-submit-button" onClick={addOrUpdateEvent} colorScheme="blue">
             {editingEvent ? '일정 수정' : '일정 추가'}
@@ -283,6 +260,7 @@ function App() {
           deleteEvent={deleteEvent}
           notifiedEvents={notifiedEvents}
           editEvent={editEvent}
+          editEventRepeat={editEventRepeat}
         />
       </Flex>
 
