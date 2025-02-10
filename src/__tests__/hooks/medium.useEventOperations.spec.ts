@@ -20,6 +20,12 @@ vi.mock('@chakra-ui/react', async () => {
   };
 });
 
+describe('useEventOperations - 반복이벤트 처리', () => {
+  it('신규 이벤트 생성시 반복을 설정한 이벤트가 인자로 들어오면, 반복이벤트를 생성한다.', async () => {
+    const { result } = renderHook(() => useEventOperations(false));
+  });
+});
+
 it('저장되어있는 초기 이벤트 데이터를 적절하게 불러온다', async () => {
   const { result } = renderHook(() => useEventOperations(false));
 
