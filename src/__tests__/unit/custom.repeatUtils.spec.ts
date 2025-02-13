@@ -1,5 +1,5 @@
 import { RepeatData } from '../../types';
-import { generateRecurringDates } from '../../utils/repeatUtils';
+import { generateEvents, generateRecurringDates } from '../../utils/repeatUtils';
 
 describe('custom.repeatUtils > generateRecurringDates 테스트', () => {
   beforeEach(() => {
@@ -183,11 +183,95 @@ describe('custom.repeatUtils > generateRecurringDates 테스트', () => {
 });
 
 describe('custom.repeatUtils > generateEvents 테스트', () => {
-  it('일단위 반복일정을 생성한다.', () => {});
+  it('일단위 반복일정을 생성한다.', () => {
+    const events = generateEvents({
+      title: '일단위 반복일정',
+      date: '2025-01-01',
+      startTime: '09:00',
+      endTime: '10:00',
+      description: '일단위 반복일정입니다.',
+      location: '서울',
+      category: '일정',
+      repeat: {
+        type: 'daily',
+        interval: 1,
+        endDate: '2025-01-10',
+      },
+      notificationTime: 10,
+    });
 
-  it('주단위 반복일정을 생성한다.', () => {});
+    expect(events).toHaveLength(10);
+    events.forEach((event, index) => {
+      expect(event.date).toBe(new Date('2025-01-0' + (index + 1)).toISOString());
+    });
+  });
 
-  it('월단위 반복일정을 생성한다.', () => {});
+  it('주단위 반복일정을 생성한다.', () => {
+    const events = generateEvents({
+      title: '주단위 반복일정',
+      date: '2025-01-01',
+      startTime: '09:00',
+      endTime: '10:00',
+      description: '주단위 반복일정입니다.',
+      location: '서울',
+      category: '일정',
+      repeat: {
+        type: 'weekly',
+        interval: 1,
+        endDate: '2025-01-31',
+      },
+      notificationTime: 10,
+    });
 
-  it('년단위 반복일정을 생성한다.', () => {});
+    expect(events).toHaveLength(5);
+    events.forEach((event, index) => {
+      expect(event.date).toBe(new Date('2025-01-0' + (index * 7 + 1)).toISOString());
+    });
+  });
+
+  it('월단위 반복일정을 생성한다.', () => {
+    const events = generateEvents({
+      title: '월단위 반복일정',
+      date: '2025-01-01',
+      startTime: '09:00',
+      endTime: '10:00',
+      description: '월단위 반복일정입니다.',
+      location: '서울',
+      category: '일정',
+      repeat: {
+        type: 'monthly',
+        interval: 1,
+        endDate: '2025-03-31',
+      },
+      notificationTime: 10,
+    });
+
+    expect(events).toHaveLength(3);
+    events.forEach((event, index) => {
+      expect(event.date).toBe(new Date('2025-0' + (index + 1) + '-01').toISOString());
+    });
+  });
+
+  it('년단위 반복일정을 생성한다.', () => {
+    const events = generateEvents({
+      title: '년단위 반복일정',
+      date: '2024-01-01',
+      startTime: '09:00',
+      endTime: '10:00',
+      description: '년단위 반복일정입니다.',
+      location: '서울',
+      category: '일정',
+      repeat: {
+        type: 'yearly',
+        interval: 1,
+        endDate: '2025-12-31',
+      },
+      notificationTime: 10,
+    });
+
+    expect(events).toHaveLength(2);
+    const expectedEventsDates = ['2024-01-01', '2025-01-01'];
+    const eventsDates = events.map((event) => new Date(event.date).toISOString().split('T')[0]);
+    expect(eventsDates).toEqual(expectedEventsDates);
+  });
 });

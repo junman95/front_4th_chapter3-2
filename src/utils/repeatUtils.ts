@@ -1,4 +1,14 @@
-import { RepeatData } from '../types';
+import { Event, EventForm, RepeatData } from '../types';
+
+const generateEvents = <T extends Event | EventForm>(eventDataWithRepeat: T): T[] => {
+  const { repeat, ...eventData } = eventDataWithRepeat;
+  const dates = generateRecurringDates({ ...repeat, startDate: eventData.date });
+  const events: T[] = Array.from({ length: dates.length });
+
+  return events.map((_, index) => {
+    return { ...eventData, repeat, date: dates[index].toISOString() } as T;
+  });
+};
 
 const generateRecurringDates = ({
   type: repeatType,
@@ -55,4 +65,4 @@ function getLastDayOfMonth(year: number, month: number) {
   return new Date(year, month + 1, 0).getDate();
 }
 
-export { generateRecurringDates };
+export { generateEvents, generateRecurringDates };
