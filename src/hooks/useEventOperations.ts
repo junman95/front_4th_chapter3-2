@@ -53,10 +53,10 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
         // 여기 작성
         const newEvents = generateEvents(eventData);
         if (editing) {
-          response = await fetch(`/api/events-list`, {
+          response = await fetch(`/api/events/${(eventData as Event).id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ events: newEvents }),
+            body: JSON.stringify(eventData),
           });
         } else {
           response = await fetch('/api/events-list', {
