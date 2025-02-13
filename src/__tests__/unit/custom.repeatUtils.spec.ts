@@ -1,7 +1,7 @@
 import { RepeatData } from '../../types';
 import { generateRecurringDates } from '../../utils/repeatUtils';
 
-describe('custom.repeatUtils', () => {
+describe('custom.repeatUtils > generateRecurringDates 테스트', () => {
   beforeEach(() => {
     vi.setSystemTime('2025-01-01');
   });
@@ -180,4 +180,14 @@ describe('custom.repeatUtils', () => {
     // expect(dates).toHaveLength(diffTime);
     expect(dates).toEqual(expectDates);
   });
+});
+
+describe('custom.repeatUtils > generateEvents 테스트', () => {
+  it('일단위 반복일정을 생성한다.', () => {});
+
+  it('주단위 반복일정을 생성한다.', () => {});
+
+  it('월단위 반복일정을 생성한다.', () => {});
+
+  it('년단위 반복일정을 생성한다.', () => {});
 });
