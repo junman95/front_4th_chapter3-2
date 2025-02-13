@@ -23,6 +23,30 @@ vi.mock('@chakra-ui/react', async () => {
 describe('useEventOperations - 반복이벤트 처리', () => {
   it('신규 이벤트 생성시 반복을 설정한 이벤트가 인자로 들어오면, 반복이벤트를 생성한다.', async () => {
     const { result } = renderHook(() => useEventOperations(false));
+
+    expect(result.current.events).toHaveLength(0);
+    setupMockHandlerCreation();
+
+    await act(async () => {
+      await result.current.saveEvent({
+        id: '1',
+        title: '반복 회의',
+        date: '2024-10-1',
+        startTime: '09:00',
+        endTime: '10:00',
+        description: '기존 팀 미팅',
+        location: '회의실 B',
+        category: '업무',
+        repeat: { type: 'weekly', interval: 1, endDate: '2024-12-31' },
+        notificationTime: 10,
+      });
+    });
+
+    expect(result.current.events).toHaveLength(14);
+    const titles = result.current.events.map((event) => event.title);
+    titles.forEach((title) => {
+      expect(title).toBe('반복 회의');
+    });
   });
 });
 
