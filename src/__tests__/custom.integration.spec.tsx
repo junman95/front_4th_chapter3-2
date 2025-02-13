@@ -5,7 +5,7 @@ import { ReactElement } from 'react';
 
 import {
   setupMockHandlerCreation,
-  setupMockHandlerDeletion,
+  setupMockHandlerDeletionForRepeat,
   setupMockHandlerUpdatingForRepeat,
 } from '../__mocks__/handlersUtils';
 import App from '../App';
@@ -76,6 +76,8 @@ describe('반복 일정 CRUD', () => {
   });
 
   it('반복 일정을 수정하면, 해당 일정만 수정되어야 한다', async () => {
+    vi.setSystemTime(new Date('2025-01-05'));
+
     const mockEvents: Event[] = [
       {
         title: '반복 회의',
@@ -137,127 +139,103 @@ describe('반복 일정 CRUD', () => {
         repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
         id: '89',
       },
-      {
-        title: '반복 회의',
-        date: '2025-01-12',
-        startTime: '14:00',
-        endTime: '15:00',
-        description: '프로젝트 진행 상황 논의',
-        location: '회의실 A',
-        category: '업무',
-        notificationTime: 10,
-        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
-        id: '90',
-      },
-      {
-        title: '반복 회의',
-        date: '2025-01-13',
-        startTime: '14:00',
-        endTime: '15:00',
-        description: '프로젝트 진행 상황 논의',
-        location: '회의실 A',
-        category: '업무',
-        notificationTime: 10,
-        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
-        id: '91',
-      },
-      {
-        title: '반복 회의',
-        date: '2025-01-14',
-        startTime: '14:00',
-        endTime: '15:00',
-        description: '프로젝트 진행 상황 논의',
-        location: '회의실 A',
-        category: '업무',
-        notificationTime: 10,
-        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
-        id: '92',
-      },
-      {
-        title: '반복 회의',
-        date: '2025-01-15',
-        startTime: '14:00',
-        endTime: '15:00',
-        description: '프로젝트 진행 상황 논의',
-        location: '회의실 A',
-        category: '업무',
-        notificationTime: 10,
-        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
-        id: '93',
-      },
-      {
-        title: '반복 회의',
-        date: '2025-01-16',
-        startTime: '14:00',
-        endTime: '15:00',
-        description: '프로젝트 진행 상황 논의',
-        location: '회의실 A',
-        category: '업무',
-        notificationTime: 10,
-        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
-        id: '94',
-      },
-      {
-        title: '반복 회의',
-        date: '2025-01-17',
-        startTime: '14:00',
-        endTime: '15:00',
-        description: '프로젝트 진행 상황 논의',
-        location: '회의실 A',
-        category: '업무',
-        notificationTime: 10,
-        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
-        id: '95',
-      },
     ];
-    vi.setSystemTime(new Date('2025-01-05'));
-    const { user } = setup(<App />);
-
     setupMockHandlerUpdatingForRepeat(mockEvents);
-    await saveRepeatSchedule(user, {
-      title: '반복 회의',
-      date: '2024-01-15',
-      startTime: '14:00',
-      endTime: '15:00',
-      description: '프로젝트 진행 상황 논의',
-      location: '회의실 A',
-      category: '업무',
-      repeat: {
-        interval: 1,
-        type: 'daily',
-        endDate: '2025-03-20',
-      },
-      notificationTime: 10,
-    });
+
+    const { user } = setup(<App />);
 
     const eventList = within(screen.getByTestId('event-list'));
 
     screen.debug(screen.getByTestId('event-list'));
 
-    const editIcon = screen.getByLabelText('Edit event');
+    const editIcon = (await screen.findAllByLabelText('Edit event'))[0];
 
     await user.click(editIcon);
 
     await user.clear(screen.getByLabelText('제목'));
     await user.type(screen.getByLabelText('제목'), '수정된 회의');
+    expect(screen.getByLabelText('제목')).toHaveValue('수정된 회의');
 
     await user.click(screen.getByTestId('event-submit-button'));
-
-    expect(eventList.queryAllByText('반복 회의')).toHaveLength(14);
-    expect(eventList.queryAllByText('수정된 회의')).toHaveLength(1);
+    expect(await eventList.queryAllByText('수정된 회의')).toHaveLength(1);
+    expect(eventList.queryAllByText('반복 회의')).toHaveLength(4);
   });
 
   it('반복 일정을 삭제하면, 해당 일정만 삭제되어야 한다', async () => {
-    const { user } = setup(<App />);
+    vi.setSystemTime(new Date('2025-01-05'));
 
-    setupMockHandlerDeletion();
+    const mockEvents: Event[] = [
+      {
+        title: '반복 회의',
+        date: '2025-01-07',
+        startTime: '14:00',
+        endTime: '15:00',
+        description: '프로젝트 진행 상황 논의',
+        location: '회의실 A',
+        category: '업무',
+        notificationTime: 10,
+        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
+        id: '85',
+      },
+      {
+        title: '반복 회의',
+        date: '2025-01-08',
+        startTime: '14:00',
+        endTime: '15:00',
+        description: '프로젝트 진행 상황 논의',
+        location: '회의실 A',
+        category: '업무',
+        notificationTime: 10,
+        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
+        id: '86',
+      },
+      {
+        title: '반복 회의',
+        date: '2025-01-09',
+        startTime: '14:00',
+        endTime: '15:00',
+        description: '프로젝트 진행 상황 논의',
+        location: '회의실 A',
+        category: '업무',
+        notificationTime: 10,
+        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
+        id: '87',
+      },
+      {
+        title: '반복 회의',
+        date: '2025-01-10',
+        startTime: '14:00',
+        endTime: '15:00',
+        description: '프로젝트 진행 상황 논의',
+        location: '회의실 A',
+        category: '업무',
+        notificationTime: 10,
+        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
+        id: '88',
+      },
+      {
+        title: '반복 회의',
+        date: '2025-01-11',
+        startTime: '14:00',
+        endTime: '15:00',
+        description: '프로젝트 진행 상황 논의',
+        location: '회의실 A',
+        category: '업무',
+        notificationTime: 10,
+        repeat: { type: 'daily', interval: 1, endDate: '2025-03-20' },
+        id: '89',
+      },
+    ];
+    setupMockHandlerDeletionForRepeat(mockEvents);
+    const { user } = setup(<App />);
 
     const eventList = within(screen.getByTestId('event-list'));
 
-    const deleteIcon = eventList.getByLabelText('Delete event');
+    const deleteIcon = (await eventList.findAllByLabelText('Delete event'))[0];
+    expect(eventList.queryAllByText('반복 회의')).toHaveLength(5);
 
     await user.click(deleteIcon);
 
-    expect(eventList.queryAllByText('반복 회의')).toHaveLength(14);
+    expect(eventList.queryAllByText('반복 회의')).toHaveLength(4);
   });
 });
