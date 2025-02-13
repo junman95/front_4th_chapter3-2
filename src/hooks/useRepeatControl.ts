@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Event, RepeatType } from '../types';
 
 const useRepeatControl = (repeat?: Event['repeat']) => {
-  const [isRepeating, setIsRepeating] = useState(repeat?.type !== 'none');
+  const [isRepeating, setIsRepeating] = useState(repeat ? repeat.type !== 'none' : false);
   const [repeatType, setRepeatType] = useState<RepeatType>(repeat?.type || 'none');
   const [repeatInterval, setRepeatInterval] = useState(repeat?.interval || 1);
   const [repeatEndDate, setRepeatEndDate] = useState(repeat?.endDate || '');

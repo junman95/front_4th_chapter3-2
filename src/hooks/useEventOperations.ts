@@ -2,6 +2,7 @@ import { useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 import { Event, EventForm } from '../types';
+import { generateEvents } from '../utils/repeatUtils';
 
 export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -29,22 +30,45 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   const saveEvent = async (eventData: Event | EventForm) => {
     try {
       let response;
-      if (editing) {
-        response = await fetch(`/api/events/${(eventData as Event).id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(eventData),
-        });
+      if (eventData.repeat.type === 'none') {
+        if (eventData.repeat.type) {
+          if (editing) {
+            response = await fetch(`/api/events/${(eventData as Event).id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(eventData),
+            });
+          } else {
+            response = await fetch('/api/events', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(eventData),
+            });
+          }
+          if (!response.ok) {
+            throw new Error('Failed to save event');
+          }
+        }
       } else {
-        response = await fetch('/api/events', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(eventData),
-        });
-      }
+        // 여기 작성
+        const newEvents = generateEvents(eventData);
+        if (editing) {
+          response = await fetch(`/api/events-list`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ events: newEvents }),
+          });
+        } else {
+          response = await fetch('/api/events-list', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ events: newEvents }),
+          });
+        }
 
-      if (!response.ok) {
-        throw new Error('Failed to save event');
+        if (!response.ok) {
+          throw new Error('Failed to save event');
+        }
       }
 
       await fetchEvents();
