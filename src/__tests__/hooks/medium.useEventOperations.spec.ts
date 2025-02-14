@@ -45,7 +45,7 @@ describe('useEventOperations - 반복이벤트 처리', () => {
     expect(result.current.events).toHaveLength(14);
     const titles = result.current.events.map((event) => event.title);
     titles.forEach((title) => {
-      expect(title).toBe('반복 회의');
+      expect(title).toBe('[반복]반복 회의');
     });
   });
 });

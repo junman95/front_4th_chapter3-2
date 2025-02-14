@@ -6,7 +6,12 @@ const generateEvents = <T extends Event | EventForm>(eventDataWithRepeat: T): T[
   const events: T[] = Array.from({ length: dates.length });
 
   return events.map((_, index) => {
-    return { ...eventData, repeat, date: dates[index].toISOString() } as T;
+    return {
+      ...eventData,
+      repeat,
+      title: `[반복]${eventData.title}`,
+      date: dates[index].toISOString(),
+    } as T;
   });
 };
 

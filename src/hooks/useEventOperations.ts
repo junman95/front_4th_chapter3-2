@@ -33,6 +33,10 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
       if (eventData.repeat.type === 'none') {
         if (eventData.repeat.type) {
           if (editing) {
+            eventData = {
+              ...eventData,
+              title: eventData.title.replace(/\[반복\]/g, ''),
+            };
             response = await fetch(`/api/events/${(eventData as Event).id}`, {
               method: 'PUT',
               headers: { 'Content-Type': 'application/json' },
