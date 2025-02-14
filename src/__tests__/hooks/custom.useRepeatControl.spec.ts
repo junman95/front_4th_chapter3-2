@@ -35,16 +35,6 @@ describe('useRepeatControl', () => {
     expect(result.current.repeatType).toBe('yearly');
   });
 
-  // TDD - util에서 처리하도록 변경
-  // it('반복유형이 월별이고, 31일이 없는 월일 경우 해당월의 마지막날로 설정한다.', () => {
-  //   const { result } = renderHook(() => useRepeatControl());
-
-  //   act(() => {
-  //     result.current.setRepeatType('monthly');
-  //     result.current.setRepeatInterval(1);
-  //   });
-  // });
-
   it('일정 반복 간격을 설정할 수 있다.', () => {
     const { result } = renderHook(() => useRepeatControl());
 
