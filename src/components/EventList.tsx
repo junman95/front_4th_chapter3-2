@@ -51,7 +51,14 @@ const EventList: React.FC<EventListProps> = ({
         <Text>검색 결과가 없습니다.</Text>
       ) : (
         filteredEvents.map((event) => (
-          <Box key={event.id} borderWidth={1} borderRadius="lg" p={3} width="100%">
+          <Box
+            data-testid="event-item"
+            key={event.id}
+            borderWidth={1}
+            borderRadius="lg"
+            p={3}
+            width="100%"
+          >
             <HStack justifyContent="space-between">
               <VStack align="start">
                 <HStack>

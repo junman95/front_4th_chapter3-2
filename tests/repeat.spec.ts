@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+
 test('repeat E2E', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2024-07-01T00:00:00Z'));
   await page.goto('http://localhost:5173');
@@ -26,9 +27,13 @@ test('repeat E2E', async ({ page }) => {
   await page.getByRole('textbox', { name: '반복 종료일' }).fill('2024-07-31');
   await page.getByTestId('event-submit-button').click();
 
+  // 생성한 이벤트가 리스트에 보여져야 한다.
   const eventList = page.getByTestId('event-list');
   await expect(eventList).toContainText('주간팀 회의');
-  // N 개의 이벤트가 생성되었는지 확인어떻게할까?
+
+  // 5개의 이벤트가 생성되어야 한다.
+  const events = await page.getByTestId('event-item');
+  await expect(events).toHaveCount(5);
 
   // ! 수정로직
   await page.getByRole('button', { name: 'Edit event' }).first().click();
